@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SMKN 1 Gedangan | GALAXY ABSENSI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(ellipse at 30% 40%, #030318, #00010a);
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* BINTANG */
+        .star {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 0;
+            animation: twinkle 3s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* PLANET */
+        .planet {
+            position: fixed;
+            font-size: 45px;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatPlanet 25s infinite ease-in-out;
+        }
+        @keyframes floatPlanet {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(10deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* KOMET */
+        .comet {
+            position: fixed;
+            font-size: 25px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+            animation: flyComet 12s infinite linear;
+        }
+        @keyframes flyComet {
+            0% { transform: translateX(-100px) translateY(20vh) rotate(45deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateX(calc(100vw + 100px)) translateY(-10vh) rotate(45deg); opacity: 0; }
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background: rgba(5, 15, 35, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 40px;
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: 0.3s;
+        }
+        .card:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .card h2 {
+            color: #00ffff;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            border-left: 5px solid #ff44aa;
+            padding-left: 18px;
+            text-shadow: 0 0 8px #00ffff;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            background: rgba(10, 25, 45, 0.9);
+            border: 1px solid #00ffff;
+            border-radius: 60px;
+            color: white;
+            font-size: 1rem;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ff44aa;
+            box-shadow: 0 0 15px #ff44aa;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00ccff, #0066aa);
+            border: none;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px #00ccff;
+        }
+
+        .btn-kirim {
+            background: linear-gradient(135deg, #ff44aa, #aa2277);
+            font-size: 1.2rem;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+        }
+        .btn-outline:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .photo-preview {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 30px;
+            margin-top: 15px;
+            border: 3px solid #00ffff;
+            display: none;
+            box-shadow: 0 0 20px rgba(0,255,255,0.5);
+        }
+
+        .login-box {
+            text-align: center;
+            background: rgba(5, 15, 35, 0.85);
+            backdrop-filter: blur(20px);
+            border: 2px solid #00ffff;
+        }
+
+        .logo-space {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #00ffff, #ff44aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 12px 24px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            padding: 10px 6px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            color: #ddd;
+            font-size: 0.75rem;
+        }
+        th { color: #ff44aa; }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .hadir { background: #00aa44; color: white; }
+        .terlambat { background: #ff8800; color: white; }
+        .izin { background: #ffaa22; color: black; }
+        .alpa { background: #ff3366; color: white; }
+
+        .photo-thumb {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid #00ffff;
+        }
+
+        .jam-besar {
+            font-size: 2rem;
+            text-align: center;
+            font-family: monospace;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            letter-spacing: 3px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            background: rgba(0, 50, 80, 0.6);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            margin: 0;
+        }
+        .tab-btn.active {
+            background: #00ffff;
+            color: black;
+        }
+
+        .rekap-card {
+            background: rgba(0, 100, 150, 0.15);
+            border-color: #ff44aa;
+        }
+
+        .stat-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .stat-hadir { color: #00ff88; }
+        
+        .success {
+            background: rgba(0, 255, 136, 0.15);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 10px;
+            border-radius: 20px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .camera-warning {
+            background: rgba(255, 68, 170, 0.2);
+            border: 1px solid #ff44aa;
+            color: #ff88cc;
+            padding: 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 650px) {
+            body { padding: 12px; }
+            .card { padding: 18px; }
+            .photo-preview { width: 100px; height: 100px; }
+            .jam-besar { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- BINTANG & PLANET -->
+<div class="planet" style="top: 8%; left: 3%;">🪐</div>
+<div class="planet" style="bottom: 12%; right: 2%; font-size: 70px;">🌕</div>
+<div class="planet" style="top: 50%; left: -2%; font-size: 55px;">🌍</div>
+<div class="planet" style="bottom: 30%; right: 5%; font-size: 50px;">🔴</div>
+<div class="comet" style="top: 20%; left: -5%;">☄️</div>
+<div class="comet" style="top: 70%; left: -10%; animation-duration: 18s;">💫</div>
+<script>
+    for (let i = 0; i < 180; i++) {
+        let star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 4 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.top = Math.random() * 100 + '%';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 6 + 's';
+        document.body.appendChild(star);
+    }
+</script>
+
+<div class="container" id="app">
+    <!-- LOGIN PAGE -->
+    <div id="loginPage">
+        <div class="card login-box">
+            <div class="logo-space"><i class="fas fa-rocket"></i> MARGA123</div>
+            <h1 style="color:#00ffff;">SMKN 1 GEDANGAN</h1>
+            <p style="color:#ff44aa; margin-bottom: 25px;">MALANG - JAWA TIMUR</p>
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <select id="loginRole">
+                <option value="admin">👑 ADMIN</option>
+                <option value="guru">👩‍🏫 GURU</option>
+                <option value="murid">🧑‍🎓 MURID</option>
+            </select>
+            <button id="doLoginBtn">🚀 LOGIN</button>
+            <div id="loginError" style="margin-top: 12px; color: #ff8888;"></div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminApp" style="display: none;">
+        <div class="nav-bar">
+            <span><i class="fas fa-crown"></i> ADMIN SPACE</span>
+            <button id="logoutAdmin" class="btn-outline" style="width: auto;">LOGOUT</button>
+        </div>
+        <div class="card">
+            <h2>➕ BUAT AKUN</h2>
+            <input type="text" id="newUser" placeholder="Username">
+            <input type="password" id="newPass" placeholder="Password">
+            <select id="newRole"><option value="guru">GURU</option><option value="murid">MURID</option></select>
+            <button id="createBtn">BUAT AKUN</button>
+        </div>
+        <div class="card">
+            <h2>📋 DAFTAR AKUN</h2>
+            <button id="resetAkunBtn" class="btn-outline" style="width: auto;">RESET SEMUA</button>
+            <div id="daftarAkun"></div>
+        </div>
+        <div class="card">
+            <div class="tab-buttons"><button id="tabGuruBtn" class="tab-btn active">📖 DATA GURU</button><button id="tabMuridBtn" class="tab-btn">📚 DATA MURID</button></div>
+            <div id="dataGuruContainer"></div>
+            <div id="dataMuridContainer" style="display: none;"></div>
+        </div>
+        <div class="card rekap-card">
+            <h2>📊 REKAP ABSENSI</h2>
+            <p style="font-size:0.7rem;">1 Minggu = 5 hari | Terlambat dihitung HADIR</p>
+            <select id="rekapPeriode" style="margin-bottom: 10px;">
+                <option value="minggu">1 MINGGU</option>
+                <option value="bulan">1 BULAN</option>
+                <option value="semester">1 SEMESTER</option>
+            </select>
+            <select id="rekapRole" style="margin-bottom: 10px;">
+                <option value="all">SEMUA</option>
+                <option value="guru">GURU</option>
+                <option value="murid">MURID</option>
+            </select>
+            <button id="lihatRekapBtn">LIHAT REKAP</button>
+            <button id="exportBtn" class="btn-outline">EXPORT CSV</button>
+            <div id="rekapData"></div>
+        </div>
+    </div>
+
+    <!-- GURU APP -->
+    <div id="guruApp" style="display: none;">
+        <div class="nav-bar"><span><i class="fas fa-chalkboard-user"></i> <span id="guruName"></span></span><button id="logoutGuru" class="btn-outline">LOGOUT</button></div>
+        <div class="card">
+            <div class="jam-besar" id="jamGuru">--:--:--</div>
+            <div class="success" id="infoGuru" style="font-size:0.7rem;"></div>
+        </div>
+        <div class="card">
+            <h2>📝 DATA GURU</h2>
+            <input id="guruNama" placeholder="Nama Guru">
+            <input id="guruMapel" placeholder="Mata Pelajaran">
+            <input id="guruTanggal" type="date" value="">
+        </div>
+        
+        <!-- KAMERA LANGSUNG -->
+        <div class="card">
+            <h2>📸 FOTO SELFIE</h2>
+            <button id="bukaKameraGuru">📷 BUKA KAMERA</button>
+            <img id="previewGuru" class="photo-preview">
+            <div id="statusFotoGuru" class="camera-warning">Klik tombol di atas untuk buka kamera</div>
+        </div>
+        
+        <div class="card"><h2>✅ STATUS</h2><select id="statusGuru"><option value="hadir">HADIR</option><option value="izin">IZIN</option><option value="alpa">ALPA</option></select><button id="kirimGuru" class="btn-kirim">KIRIM ABSEN</button><div id="errorGuru"></div></div>
+        <div class="card"><h2>📜 RIWAYAT</h2><div id="riwayatGuru"></div></div>
+    </div>
+
+    <!-- MURID APP -->
+    <div id="muridApp" style="display: none;">
+        <div class="nav-bar"><span><i class="fas fa-user-graduate"></i> <span id="muridName"></span></span><button id="logoutMurid" class="btn-outline">LOGOUT</button></div>
+        <div class="card">
+            <div class="jam-besar" id="jamMurid">--:--:--</div>
+            <div class="success" id="infoMurid" style="font-size:0.7rem;"></div>
+        </div>
+        <div class="card">
+            <h2>📝 DATA MURID</h2>
+            <input id="muridNama" placeholder="Nama Lengkap">
+            <input id="muridKelas" placeholder="Kelas">
+            <input id="muridNoAbsen" placeholder="No. Absen" type="number">
+            <input id="muridTanggal" type="date" value="">
+        </div>
+        
+        <!-- KAMERA LANGSUNG -->
+        <div class="card">
+            <h2>📸 FOTO SELFIE</h2>
+            <button id="bukaKameraMurid">📷 BUKA KAMERA</button>
+            <img id="previewMurid" class="photo-preview">
+            <div id="statusFotoMurid" class="camera-warning">Klik tombol di atas untuk buka kamera</div>
+        </div>
+        
+        <div class="card"><h2>✅ STATUS</h2><select id="statusMurid"><option value="hadir">HADIR</option><option value="izin">IZIN</option><option value="alpa">ALPA</option></select><button id="kirimMurid" class="btn-kirim">KIRIM ABSEN</button><div id="errorMurid"></div></div>
+        <div class="card"><h2>📜 RIWAYAT</h2><div id="riwayatMurid"></div></div>
+    </div>
+</div>
+
+<script>
+    // =============== DATABASE ===============
+    let DB_USERS = "galaxy_final_users_v3";
+    let DB_ABSEN_GURU = "galaxy_final_guru_v3";
+    let DB_ABSEN_MURID = "galaxy_final_murid_v3";
+
+    let currentUser = null;
+    let guruFoto = null;
+    let muridFoto = null;
+
+    // BATAS ABSEN
+    function getStatusByTime(selectedStatus) {
+        let now = new Date();
+        let jam = now.getHours();
+        let menit = now.getMinutes();
+        
+        // Jika pilih IZIN atau ALPA, langsung sesuai pilihan
+        if (selectedStatus === "izin") return "izin";
+        if (selectedStatus === "alpa") return "alpa";
+        
+        // Untuk HADIR
+        if (jam < 7 || (jam === 7 && menit === 0)) {
+            return "hadir";
+        } else if (jam < 10 || (jam === 10 && menit === 0)) {
+            return "terlambat";
+        } else {
+            return "alpa"; // lewat jam 10:00
+        }
+    }
+
+    function isAbsenAllowed() {
+        let now = new Date();
+        let jam = now.getHours();
+        let menit = now.getMinutes();
+        // Hanya bisa absen sebelum jam 10:00
+        return (jam < 10 || (jam === 10 && menit === 0));
+    }
+
+    function initDB() {
+        if (!localStorage.getItem(DB_USERS)) {
+            localStorage.setItem(DB_USERS, JSON.stringify([
+                { id: "admin1", username: "refz123", password: "123", role: "admin" },
+                { id: "guru1", username: "guru1", password: "guru123", role: "guru" },
+                { id: "murid1", username: "andika", password: "andika123", role: "murid" },
+                { id: "murid2", username: "bunga", password: "bunga123", role: "murid" },
+                { id: "murid3", username: "reva", password: "reva123", role: "murid" }
+            ]));
+        }
+        if (!localStorage.getItem(DB_ABSEN_GURU)) localStorage.setItem(DB_ABSEN_GURU, JSON.stringify([]));
+        if (!localStorage.getItem(DB_ABSEN_MURID)) localStorage.setItem(DB_ABSEN_MURID, JSON.stringify([]));
+    }
+
+    function getToday() {
+        let d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function sudahAbsen(role, username) {
+        let data = JSON.parse(localStorage.getItem(role === "guru" ? DB_ABSEN_GURU : DB_ABSEN_MURID));
+        return data.some(a => a.username === username && a.tanggal === getToday());
+    }
+
+    function simpanGuru(username, nama, mapel, tanggal, pilihStatus, foto) {
+        let all = JSON.parse(localStorage.getItem(DB_ABSEN_GURU));
+        let finalStatus = getStatusByTime(pilihStatus);
+        all.push({ 
+            id: Date.now(), 
+            tanggal: getToday(), 
+            jam: new Date().toLocaleTimeString(), 
+            username, nama, mapel, 
+            tanggal_absen: tanggal,
+            status_pilih: pilihStatus,
+            status_final: finalStatus, 
+            foto 
+        });
+        localStorage.setItem(DB_ABSEN_GURU, JSON.stringify(all));
+        return finalStatus;
+    }
+
+    function simpanMurid(username, nama, kelas, noAbsen, tanggal, pilihStatus, foto) {
+        let all = JSON.parse(localStorage.getItem(DB_ABSEN_MURID));
+        let finalStatus = getStatusByTime(pilihStatus);
+        all.push({ 
+            id: Date.now(), 
+            tanggal: getToday(), 
+            jam: new Date().toLocaleTimeString(), 
+            username, nama, kelas, no_absen: noAbsen,
+            tanggal_absen: tanggal,
+            status_pilih: pilihStatus,
+            status_final: finalStatus, 
+            foto 
+        });
+        localStorage.setItem(DB_ABSEN_MURID, JSON.stringify(all));
+        return finalStatus;
+    }
+
+    // KAMERA LANGSUNG - PAKAI cara paling memaksa
+    function setupKamera(buttonId, previewId, statusId, callback) {
+        let button = document.getElementById(buttonId);
+        let preview = document.getElementById(previewId);
+        let status = document.getElementById(statusId);
+        
+        button.onclick = () => {
+            // Cara 1: pakai input dengan capture="user" (kamera depan)
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'user';
+            
+            // Fallback: jika tetap buka galeri, tetap diproses
+            input.onchange = (e) => {
+                let file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    let reader = new FileReader();
+                    reader.onload = (ev) => {
+                        let imgData = ev.target.result;
+                        callback(imgData);
+                        preview.src = imgData;
+                        preview.style.display = "block";
+                        status.innerHTML = "✅ Foto selfie berhasil!";
+                        status.style.color = "#00ff88";
+                        status.style.background = "rgba(0,255,136,0.2)";
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    status.innerHTML = "❌ Silakan ambil foto, bukan pilih file lain!";
+                }
+            };
+            input.click();
+        };
+    }
+
+    function updateJam(id) { 
+        let el = document.getElementById(id); 
+        if(el) el.innerText = new Date().toLocaleTimeString(); 
+    }
+
+    function updateInfoJam() {
+        let now = new Date();
+        let jam = now.getHours();
+        let menit = now.getMinutes();
+        let infoGuru = document.getElementById('infoGuru');
+        let infoMurid = document.getElementById('infoMurid');
+        let text = "";
+        
+        if (jam < 7 || (jam === 7 && menit === 0)) {
+            text = "✅ SEBELUM JAM 07:00 → HADIR (Tepat Waktu)";
+        } else if (jam < 10 || (jam === 10 && menit === 0)) {
+            text = "⚠️ ANTARA JAM 07:00 - 10:00 → TERLAMBAT (Masih bisa absen)";
+        } else {
+            text = "❌ MELEWATI JAM 10:00 → TIDAK BISA ABSEN LAGI";
+        }
+        if (infoGuru) infoGuru.innerHTML = text;
+        if (infoMurid) infoMurid.innerHTML = text;
+    }
+
+    // =============== REKAP ===============
+    function getRekap(periode, filter) {
+        let guru = JSON.parse(localStorage.getItem(DB_ABSEN_GURU));
+        let murid = JSON.parse(localStorage.getItem(DB_ABSEN_MURID));
+        let now = new Date();
+        let startDate = new Date();
+        
+        if (periode === "minggu") {
+            let hari = now.getDay();
+            let mundur = (hari === 0 ? 2 : hari === 1 ? 3 : hari === 2 ? 4 : hari === 3 ? 5 : hari === 4 ? 6 : hari === 5 ? 0 : 1);
+            startDate.setDate(now.getDate() - mundur - 4);
+        } else if (periode === "bulan") {
+            startDate.setDate(now.getDate() - 30);
+        } else {
+            startDate.setDate(now.getDate() - 180);
+        }
+
+        let rekap = {};
+        let proses = (data, tipe) => {
+            let filtered = data.filter(a => new Date(a.tanggal) >= startDate);
+            filtered.forEach(a => {
+                let key = a.nama + "_" + tipe;
+                if (!rekap[key]) {
+                    rekap[key] = { nama: a.nama, tipe: tipe, hadir: 0, terlambat: 0, izin: 0, alpa: 0, total_hari: 0 };
+                }
+                if (a.status_final === "hadir") rekap[key].hadir++;
+                else if (a.status_final === "terlambat") rekap[key].terlambat++;
+                else if (a.status_final === "izin") rekap[key].izin++;
+                else if (a.status_final === "alpa") rekap[key].alpa++;
+                rekap[key].total_hari++;
+            });
+        };
+        if (filter === "all" || filter === "guru") proses(guru, "Guru");
+        if (filter === "all" || filter === "murid") proses(murid, "Murid");
+        return Object.values(rekap);
+    }
+
+    function renderRekap() {
+        let periode = document.getElementById('rekapPeriode').value;
+        let filter = document.getElementById('rekapRole').value;
+        let data = getRekap(periode, filter);
+        let txt = periode === "minggu" ? "1 MINGGU" : (periode === "bulan" ? "1 BULAN" : "1 SEMESTER");
+        
+        if (!data.length) {
+            document.getElementById('rekapData').innerHTML = "<div class='success'>Belum ada data</div>";
+            return;
+        }
+        
+        let html = `<div class="success">📊 REKAP ${txt}</div>
+        <div class='table-wrapper'>能atable>
+            <thead><tr><th>No</th><th>Nama</th><th>Role</th><th>✅ HADIR</th><th>⚠️ TERLAMBAT</th><th>📝 IZIN</th><th>❌ ALPA</th><th>Total</th></tr></thead>
+            <tbody>`;
+        data.sort((a,b) => a.nama.localeCompare(b.nama)).forEach((d, i) => {
+            html += `<tr>
+                <td>${i+1}</td>
+                <td><strong>${d.nama}</strong></td>
+                <td>${d.tipe}</td>
+                <td class="stat-hadir">${d.hadir}</td>
+                <td class="stat-terlambat">${d.terlambat}</td>
+                <td>${d.izin}</td>
+                <td>${d.alpa}</td>
+                <td>${d.total_hari}</td>
+            </tr>`;
+        });
+        html += `</tbody></table></div>`;
+        document.getElementById('rekapData').innerHTML = html;
+    }
+
+    function exportCSV() {
+        let periode = document.getElementById('rekapPeriode').value;
+        let filter = document.getElementById('rekapRole').value;
+        let data = getRekap(periode, filter);
+        let rows = [["No","Nama","Role","Hadir","Terlambat","Izin","Alpa","Total"]];
+        data.sort((a,b) => a.nama.localeCompare(b.nama)).forEach((d, i) => {
+            rows.push([i+1, d.nama, d.tipe, d.hadir, d.terlambat, d.izin, d.alpa, d.total_hari]);
+        });
+        let csv = rows.map(r => r.join(",")).join("\n");
+        let blob = new Blob([csv], { type: "text/csv" });
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `rekap_${periode}.csv`;
+        a.click();
+    }
+
+    // =============== ADMIN RENDER ===============
+    function renderDaftarAkun() {
+        let users = JSON.parse(localStorage.getItem(DB_USERS));
+        let nonAdmin = users.filter(u => u.role !== "admin");
+        if (!nonAdmin.length) { 
+            document.getElementById('daftarAkun').innerHTML = "<div class='success'>Belum ada akun</div>"; 
+            return; 
+        }
+        let html = `<div class='table-wrapper'>能atable><thead><tr><th>Username</th><th>Password</th><th>Role</th><th>Aksi</th></tr></thead><tbody>`;
+        nonAdmin.forEach(u => {
+            html += `<tr>
+                <td>${u.username}</td>
+                <td>${u.password}</td>
+                <td>${u.role.toUpperCase()}</td>
+                <td><button class="btn-outline" onclick="editPass('${u.username}')" style="width:auto; padding:4px 12px;">Ganti</button>
+                    <button class="btn-outline" onclick="hapusAkun('${u.username}')" style="background:#ff3366; color:white; width:auto; padding:4px 12px;">Hapus</button></td>
+            </tr>`;
+        });
+        html += `</tbody></table></div>`;
+        document.getElementById('daftarAkun').innerHTML = html;
+    }
+
+    window.editPass = function(username) {
+        let newPass = prompt("Password baru untuk "+username);
+        if (newPass && newPass.trim()) {
+            let users = JSON.parse(localStorage.getItem(DB_USERS));
+            let idx = users.findIndex(u => u.username === username);
+            if (idx !== -1) { 
+                users[idx].password = newPass; 
+                localStorage.setItem(DB_USERS, JSON.stringify(users)); 
+                alert("✅ Password berubah"); 
+                renderDaftarAkun(); 
+            }
+        }
+    };
+    
+    window.hapusAkun = function(username) {
+        if (confirm(`Hapus akun ${username}?`)) {
+            let users = JSON.parse(localStorage.getItem(DB_USERS));
+            localStorage.setItem(DB_USERS, JSON.stringify(users.filter(u => u.username !== username)));
+            renderDaftarAkun();
+            renderAdminData();
+        }
+    };
+
+    function renderAdminData() {
+        let guru = JSON.parse(localStorage.getItem(DB_ABSEN_GURU));
+        let murid = JSON.parse(localStorage.getItem(DB_ABSEN_MURID));
+        
+        let htmlGuru = `<h3 style="color:#ff44aa;">📖 DATA GURU</h3><div class='table-wrapper'>能atable><thead><tr><th>Jam</th><th>Nama</th><th>Mapel</th><th>Tanggal Absen</th><th>Status</th><th>Foto</th></tr></thead><tbody>`;
+        if (guru.length === 0) {
+            htmlGuru += `<tr><td colspan="6">Belum ada数据</td></tr>`;
+        } else {
+            guru.slice().reverse().forEach(a => {
+                let statusClass = a.status_final === "hadir" ? "hadir" : (a.status_final === "terlambat" ? "terlambat" : (a.status_final === "izin" ? "izin" : "alpa"));
+                htmlGuru += `<tr>
+                    <td>${a.jam}</td>
+                    <td>${a.nama}</td>
+                    <td>${a.mapel}</td>
+                    <td>${a.tanggal_absen || a.tanggal}</td>
+                    <td><span class="status-badge ${statusClass}">${a.status_final.toUpperCase()}</span></td>
+                    <td>${a.foto ? `<img src="${a.foto}" class="photo-thumb" onclick="window.open(this.src)">` : '-'}</td>
+                </tr>`;
+            });
+        }
+        htmlGuru += `</tbody></table></div>`;
+        
+        let htmlMurid = `<h3 style="color:#ff44aa;">📚 DATA MURID</h3><div class='table-wrapper'>能atable><thead><tr><th>Jam</th><th>Nama</th><th>Kelas</th><th>No</th><th>Tanggal Absen</th><th>Status</th><th>Foto</th></tr></thead><tbody>`;
+        if (murid.length === 0) {
+            htmlMurid += `<tr><td colspan="7">Belum ada数据</td></td>`;
+        } else {
+            murid.slice().reverse().forEach(a => {
+                let statusClass = a.status_final === "hadir" ? "hadir" : (a.status_final === "terlambat" ? "terlambat" : (a.status_final === "izin" ? "izin" : "alpa"));
+                htmlMurid += `<tr>
+                    <td>${a.jam}</td>
+                    <td>${a.nama}</td>
+                    <td>${a.kelas}</td>
+                    <td>${a.no_absen}</td>
+                    <td>${a.tanggal_absen || a.tanggal}</td>
+                    <td><span class="status-badge ${statusClass}">${a.status_final.toUpperCase()}</span></td>
+                    <td>${a.foto ? `<img src="${a.foto}" class="photo-thumb" onclick="window.open(this.src)">` : '-'}</td>
+                </tr>`;
+            });
+        }
+        htmlMurid += `</tbody></table></div>`;
+        
+        document.getElementById('dataGuruContainer').innerHTML = htmlGuru;
+        document.getElementById('dataMuridContainer').innerHTML = htmlMurid;
+    }
+
+    // =============== LOGIN ===============
+    document.getElementById('doLoginBtn').onclick = () => {
+        let username = document.getElementById('loginUsername').value.trim();
+        let password = document.getElementById('loginPassword').value.trim();
+        let role = document.getElementById('loginRole').value;
+        let users = JSON.parse(localStorage.getItem(DB_USERS));
+        let found = users.find(u => u.username === username && u.password === password && u.role === role);
+        
+        if (!found) {
+            document.getElementById('loginError').innerHTML = "❌ Login gagal!";
+            return;
+        }
+        
+        currentUser = found;
+        document.getElementById('loginPage').style.display = "none";
+
+        if (role === "admin") {
+            document.getElementById('adminApp').style.display = "block";
+            renderDaftarAkun(); 
+            renderAdminData(); 
+            renderRekap();
+        } 
+        else if (role === "guru") {
+            if (!isAbsenAllowed() && !sudahAbsen("guru", currentUser.username)) {
+                alert("❌ MELEWATI JAM 10:00 → SUDAH TIDAK BISA ABSEN HARI INI!");
+                location.reload();
+                return;
+            }
+            document.getElementById('guruApp').style.display = "block";
+            document.getElementById('guruName').innerHTML = currentUser.username;
+            document.getElementById('guruTanggal').value = getToday();
+            setInterval(() => { updateJam('jamGuru'); updateInfoJam(); }, 1000);
+            guruFoto = null;
+            document.getElementById('previewGuru').style.display = "none";
+            
+            setupKamera('bukaKameraGuru', 'previewGuru', 'statusFotoGuru', (img) => {
+                guruFoto = img;
+            });
+            
+            document.getElementById('kirimGuru').onclick = () => {
+                let nama = document.getElementById('guruNama').value.trim();
+                let mapel = document.getElementById('guruMapel').value.trim();
+                let tanggal = document.getElementById('guruTanggal').value;
+                let status = document.getElementById('statusGuru').value;
+                if (!nama || !mapel) { 
+                    document.getElementById('errorGuru').innerHTML = "<div style='color:#ffaa44'>⚠️ Lengkapi data</div>"; 
+                    return; 
+                }
+                if (!guruFoto) { 
+                    document.getElementById('errorGuru').innerHTML = "<div style='color:#ffaa44'>📸 Ambil foto dulu!</div>"; 
+                    return; 
+                }
+                if (sudahAbsen("guru", currentUser.username)) { 
+                    document.getElementById('errorGuru').innerHTML = "<div style='color:#ffaa44'>⚠️ Sudah absen hari ini</div>"; 
+                    return; 
+                }
+                if (!isAbsenAllowed()) {
+                    document.getElementById('errorGuru').innerHTML = "<div style='color:#ffaa44'>❌ Melewati jam 10:00, tidak bisa absen!</div>";
+                    return;
+                }
+                let final = simpanGuru(currentUser.username, nama, mapel, tanggal, status, guruFoto);
+                alert(`✅ Absen guru berhasil!\nStatus: ${final.toUpperCase()}`);
+                location.reload();
+            };
+            
+            let riwayat = JSON.parse(localStorage.getItem(DB_ABSEN_GURU)).filter(a => a.username === currentUser.username).reverse();
+            document.getElementById('riwayatGuru').innerHTML = riwayat.length ? 
+                `<div class='table-wrapper'>能atable><thead><tr><th>Tgl</th><th>Jam</th><th>Mapel</th><th>Tgl Absen</th><th>Status</th><th>Foto</th></tr></thead><tbody>${riwayat.map(a => `<tr>
+                    <td>${a.tanggal}</td>
+                    <td>${a.jam}</td>
+                    <td>${a.mapel}</td>
+                    <td>${a.tanggal_absen || a.tanggal}</td>
+                    <td><span class="status-badge ${a.status_final === 'hadir' ? 'hadir' : (a.status_final === 'terlambat' ? 'terlambat' : (a.status_final === 'izin' ? 'izin' : 'alpa'))}">${a.status_final.toUpperCase()}</span></td>
+                    <td>${a.foto ? '<img src="'+a.foto+'" class="photo-thumb" onclick="window.open(this.src)">' : '-'}</td>
+                </tr>`).join('')}</tbody><table></div>` : 
+                "<div class='success'>Belum ada riwayat</div>";
+        } 
+        else if (role === "murid") {
+            if (!isAbsenAllowed() && !sudahAbsen("murid", currentUser.username)) {
+                alert("❌ MELEWATI JAM 10:00 → SUDAH TIDAK BISA ABSEN HARI INI!");
+                location.reload();
+                return;
+            }
+            document.getElementById('muridApp').style.display = "block";
+            document.getElementById('muridName').innerHTML = currentUser.username;
+            document.getElementById('muridTanggal').value = getToday();
+            setInterval(() => { updateJam('jamMurid'); updateInfoJam(); }, 1000);
+            muridFoto = null;
+            document.getElementById('previewMurid').style.display = "none";
+            
+            setupKamera('bukaKameraMurid', 'previewMurid', 'statusFotoMurid', (img) => {
+                muridFoto = img;
+            });
+            
+            document.getElementById('kirimMurid').onclick = () => {
+                let nama = document.getElementById('muridNama').value.trim();
+                let kelas = document.getElementById('muridKelas').value.trim();
+                let noAbsen = document.getElementById('muridNoAbsen').value.trim();
+                let tanggal = document.getElementById('muridTanggal').value;
+                let status = document.getElementById('statusMurid').value;
+                if (!nama || !kelas || !noAbsen) { 
+                    document.getElementById('errorMurid').innerHTML = "<div style='color:#ffaa44'>⚠️ Lengkapi data</div>"; 
+                    return; 
+                }
+                if (!muridFoto) { 
+                    document.getElementById('errorMurid').innerHTML = "<div style='color:#ffaa44'>📸 Ambil foto dulu!</div>"; 
+                    return; 
+                }
+                if (sudahAbsen("murid", currentUser.username)) { 
+                    document.getElementById('errorMurid').innerHTML = "<div style='color:#ffaa44'>⚠️ Sudah absen hari ini</div>"; 
+                    return; 
+                }
+                if (!isAbsenAllowed()) {
+                    document.getElementById('errorMurid').innerHTML = "<div style='color:#ffaa44'>❌ Melewati jam 10:00, tidak bisa absen!</div>";
+                    return;
+                }
+                let final = simpanMurid(currentUser.username, nama, kelas, noAbsen, tanggal, status, muridFoto);
+                alert(`✅ Absen murid berhasil!\nStatus: ${final.toUpperCase()}`);
+                location.reload();
+            };
+            
+            let riwayat = JSON.parse(localStorage.getItem(DB_ABSEN_MURID)).filter(a => a.username === currentUser.username).reverse();
+            document.getElementById('riwayatMurid').innerHTML = riwayat.length ? 
+                `<div class='table-wrapper'>能atable><thead><tr><th>Tgl</th><th>Jam</th><th>Kelas</th><th>No</th><th>Tgl Absen</th><th>Status</th><th>Foto</th></tr></thead><tbody>${riwayat.map(a => `<tr>
+                    <td>${a.tanggal}</td>
+                    <td>${a.jam}</td>
+                    <td>${a.kelas}</td>
+                    <td>${a.no_absen}</td>
+                    <td>${a.tanggal_absen || a.tanggal}</td>
+                    <td><span class="status-badge ${a.status_final === 'hadir' ? 'hadir' : (a.status_final === 'terlambat' ? 'terlambat' : (a.status_final === 'izin' ? 'izin' : 'alpa'))}">${a.status_final.toUpperCase()}</span></td>
+                    <td>${a.foto ? '<img src="'+a.foto+'" class="photo-thumb" onclick="window.open(this.src)">' : '-'}</td>
+                </tr>`).join('')}</tbody></table></div>` : 
+                "<div class='success'>Belum ada riwayat</div>";
+        }
+    };
+
+    // ADMIN BUTTONS
+    document.getElementById('createBtn')?.addEventListener('click', () => {
+        let uname = document.getElementById('newUser').value.trim();
+        let pass = document.getElementById('newPass').value.trim();
+        let role = document.getElementById('newRole').value;
+        if (!uname || !pass) { alert("Isi semua field"); return; }
+        let users = JSON.parse(localStorage.getItem(DB_USERS));
+        if (users.find(u => u.username === uname)) { alert("Username sudah ada"); return; }
+        users.push({ id: Date.now(), username: uname, password: pass, role: role });
+        localStorage.setItem(DB_USERS, JSON.stringify(users));
+        alert(`✅ Akun ${role} berhasil!\nUsername: ${uname}\nPassword: ${pass}`);
+        document.getElementById('newUser').value = "";
+        document.getElementById('newPass').value = "";
+        renderDaftarAkun();
+    });
+    
+    document.getElementById('resetAkunBtn')?.addEventListener('click', () => {
+        if (confirm("Reset semua akun (kecuali admin)?")) {
+            let users = JSON.parse(localStorage.getItem(DB_USERS));
+            localStorage.setItem(DB_USERS, JSON.stringify(users.filter(u => u.role === "admin")));
+            renderDaftarAkun();
+        }
+    });
+    
+    document.getElementById('lihatRekapBtn')?.addEventListener('click', () => renderRekap());
+    document.getElementById('exportBtn')?.addEventListener('click', () => exportCSV());
+    
+    document.getElementById('tabGuruBtn')?.addEventListener('click', () => {
+        document.getElementById('tabGuruBtn').classList.add('active'); 
+        document.getElementById('tabMuridBtn').classList.remove('active');
+        document.getElementById('dataGuruContainer').style.display = "block"; 
+        document.getElementById('dataMuridContainer').style.display = "none";
+    });
+    
+    document.getElementById('tabMuridBtn')?.addEventListener('click', () => {
+        document.getElementById('tabMuridBtn').classList.add('active'); 
+        document.getElementById('tabGuruBtn').classList.remove('active');
+        document.getElementById('dataGuruContainer').style.display = "none"; 
+        document.getElementById('dataMuridContainer').style.display = "block";
+    });
+    
+    document.getElementById('logoutAdmin')?.addEventListener('click', () => location.reload());
+    document.getElementById('logoutGuru')?.addEventListener('click', () => location.reload());
+    document.getElementById('logoutMurid')?.addEventListener('click', () => location.reload());
+
+    initDB();
+    updateInfoJam();
+</script>
+</body>
+</html>
